@@ -1,0 +1,9 @@
+﻿[13:31, 10. 08. 2019.] Baća Bat: Vektorski podaci su na aws-u, baza radi, imate public pristup
+[13:32, 10. 08. 2019.] Baća Bat: host:
+[13:32, 10. 08. 2019.] Baća Bat: database-1.cjsu9j876srn.eu-west-1.rds.amazonaws.com
+[13:32, 10. 08. 2019.] Baća Bat: port:
+[13:32, 10. 08. 2019.] Baća Bat: 5432
+[13:32, 10. 08. 2019.] Baća Bat: Username:
+[13:32, 10. 08. 2019.] Baća Bat: postgres
+[13:32, 10. 08. 2019.] Baća Bat: PW:
+[13:32, 10. 08. 2019.] Baća Bat: 734afuz6
