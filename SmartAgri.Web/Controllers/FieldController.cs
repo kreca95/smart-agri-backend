@@ -84,11 +84,14 @@ namespace SmartAgri.Web.Controllers
         public IActionResult GetFiledsBySeasonId(int year)
         {
             string fields = _fieldService.GetFieldsBySeasonYear(year);
-            if (string.IsNullOrEmpty(fields))
+
+            GetFiledsBySeasonId geom = JsonConvert.DeserializeObject<GetFiledsBySeasonId>(fields);
+
+            if (geom.type.Equals(null))
             {
                 return NotFound();
             }
-            return Ok(fields);
+            return Ok(geom);
         }
     }
 }
