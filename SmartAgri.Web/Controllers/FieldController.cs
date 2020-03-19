@@ -1,12 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using SmartAgri.DataBase.Communication;
 using SmartAgri.DataBase.Communication.Interfaces;
 using SmartAgri.DataBase.Models.Models;
 using SmartAgri.Web.Models;
@@ -18,11 +11,9 @@ namespace SmartAgri.Web.Controllers
     public class FieldController : ControllerBase
     {
         private readonly IFieldService _fieldService;
-        private readonly IMapper _mapper;
-        public FieldController(IFieldService fieldService, IMapper mapper)
+        public FieldController(IFieldService fieldService)
         {
             _fieldService = fieldService;
-            _mapper = mapper;
         }
 
         /// <summary>
@@ -49,7 +40,8 @@ namespace SmartAgri.Web.Controllers
         [HttpPost]
         public IActionResult UpsertField(UpsertFieldDTO field)
         {
-            Field fieldMapped = _mapper.Map<Field>(field);
+            //Field fieldMapped = _mapper.Map<Field>(field);
+            Field fieldMapped = MappField(field);
             //fieldMapped.Geom_ = JsonConvert.DeserializeObject<Geom>(field.Geom);
             if (ModelState.IsValid)
             {
@@ -61,6 +53,7 @@ namespace SmartAgri.Web.Controllers
             }
             return BadRequest();
         }
+
 
 
         /// <summary>
@@ -93,5 +86,20 @@ namespace SmartAgri.Web.Controllers
             }
             return Ok(geom);
         }
+
+        private Field MappField(UpsertFieldDTO field)
+        {
+            Field field1 = new Field();
+
+            field1.FieldId = field.FieldId;
+            field1.Geom_ = field.Geom;
+            field1.Id = field.Id;
+            field1.Name = field.Name;
+            field1.NasIme = field.NasIme;
+            field1.SeasonId = field.SeasonId;
+
+            return field1;
+        }
+
     }
 }
