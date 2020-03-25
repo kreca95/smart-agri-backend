@@ -135,7 +135,7 @@ namespace SmartAgri.Web.Controllers
         //provjerit name i id postoje li vec
         public IActionResult UpsertSeason([FromBody] UpsertSeasonDTO season)
         {
-            if (ModelState.IsValid)
+            if (ModelState.IsValid && season!=null)
             {
                 //var mapped = _mapper.Map<Season>(season);
 
