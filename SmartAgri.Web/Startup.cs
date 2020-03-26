@@ -10,7 +10,6 @@ using Microsoft.OpenApi.Models;
 using SmartAgri.DataBase.Communication;
 using SmartAgri.DataBase.Communication.Interfaces;
 using SmartAgri.DataBase.Communication.ServicesImplementations;
-using SmartAgri.Web.Logging;
 
 namespace SmartAgri.Web
 {
@@ -45,8 +44,6 @@ namespace SmartAgri.Web
             {
                 app.UseDeveloperExceptionPage();
             }
-            app.UseMiddleware<RequestLoggingMiddleware>();
-
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
