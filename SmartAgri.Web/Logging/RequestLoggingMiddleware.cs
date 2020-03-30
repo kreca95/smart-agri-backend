@@ -29,9 +29,6 @@ namespace SmartAgri.Web.Logging
                     context.Request?.Path.Value,
                     context.Response?.StatusCode);
 
-                _logger.Log(LogLevel.Information, "Request {method} {url} => {statusCode}", context.Request?.Method,
-                    context.Request?.Path.Value,
-                    context.Response?.StatusCode);
             }
         }
     }

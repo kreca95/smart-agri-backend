@@ -8,6 +8,12 @@ namespace SmartAgri.DataBase.Communication.ServicesImplementations
 {
     public class FieldService : IFieldService
     {
+		private readonly NLog.Logger _logger;
+		public FieldService()
+		{
+			_logger = new NLogDb.NLogDB().GetLogger();
+		}
+
 		public string GetFieldsBySeasonYear(int year)
 		{
 			try
@@ -17,8 +23,12 @@ namespace SmartAgri.DataBase.Communication.ServicesImplementations
 			}
 			catch (Exception e)
 			{
-
+				_logger.Error("Method called: {0}, Error message: {1}", System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
 				throw e;
+			}
+			finally
+			{
+				_logger.Info("Method called: {0}", System.Reflection.MethodBase.GetCurrentMethod().Name);
 			}
 		}
 
@@ -31,9 +41,13 @@ namespace SmartAgri.DataBase.Communication.ServicesImplementations
 			}
 			catch (Exception e)
 			{
-
+				_logger.Error("Method called: {0}, Error message: {1}", System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
 				throw e;
 			}
-        }
+			finally
+			{
+				_logger.Info("Method called: {0}", System.Reflection.MethodBase.GetCurrentMethod().Name);
+			}
+		}
     }
 }
