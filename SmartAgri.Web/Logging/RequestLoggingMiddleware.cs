@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Threading.Tasks;
 
 namespace SmartAgri.Web.Logging
@@ -24,12 +25,9 @@ namespace SmartAgri.Web.Logging
             finally
             {
                 _logger.LogInformation(
-                    "Request {method} {url} => {statusCode}",
+                    "{Date} Request {method} {url} => {statusCode}",
+                    DateTime.Now,
                     context.Request?.Method,
-                    context.Request?.Path.Value,
-                    context.Response?.StatusCode);
-
-                _logger.Log(LogLevel.Information, "Request {method} {url} => {statusCode}", context.Request?.Method,
                     context.Request?.Path.Value,
                     context.Response?.StatusCode);
             }
