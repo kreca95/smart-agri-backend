@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SmartAgri.DataBase.Models.Models.Geom;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -11,7 +12,7 @@ namespace SmartAgri.Web.Models
         [Required]
         public int Id { get; set; }
         [Required]
-        public Geom Geom { get; set; }
+        public GeomNas Geom { get; set; }
         [Required]
         public string Name { get; set; }
         [Required]

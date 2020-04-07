@@ -5,6 +5,7 @@ using SmartAgri.DataBase.Communication.Helpers;
 using SmartAgri.DataBase.Models.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace SmartAgri.DataBase.Communication.Queries
@@ -16,7 +17,7 @@ namespace SmartAgri.DataBase.Communication.Queries
             try
             {
                 //upitno
-                var json = JsonConvert.SerializeObject(field.Geom_);
+                var json = JsonConvert.SerializeObject(field.Geom_.features.FirstOrDefault().geometry);
                 int br = 0;
                 if (field != null)
                 {
@@ -24,7 +25,7 @@ namespace SmartAgri.DataBase.Communication.Queries
                     {
                         NpgsqlCommand cmd = conn.CreateCommand();
                         conn.Open();
-                        cmd.Parameters.Add(new NpgsqlParameter("@geom", field.Geom_));
+                        cmd.Parameters.Add(new NpgsqlParameter("@geom", json));
                         cmd.Parameters.Add(new NpgsqlParameter("@name", field.Name));
                         cmd.Parameters.Add(new NpgsqlParameter("@nas_ime", field.NasIme));
                         cmd.Parameters.Add(new NpgsqlParameter("@season_id", field.Season.Id));
