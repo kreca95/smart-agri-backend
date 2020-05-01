@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SportBook.Libraries.DBCommunication;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -6,6 +7,24 @@ namespace SmartAgri.DataBase.Models.Models
 {
     public class User
     {
+        public User()
+        {
+            Role = new Role();
+        }
+        public User(System.Data.IDataReader rdr)
+        {
+            PasswordHash = rdr.GetRecord<string>("passwordhash");
+            PasswordSalt = rdr.GetRecord<string>("passwordsalt");
+            Id = rdr.GetRecord<int>("id");
+            FirstName = rdr.GetRecord<string>("first_name");
+            LastName = rdr.GetRecord<string>("last_name");
+            Sex = rdr.GetRecord<string>("sex");
+            Birthday = rdr.GetRecord<DateTime>("birthday");
+            Email = rdr.GetRecord<string>("email");
+            RoleId = rdr.GetRecord<int>("role");
+
+            Role = new Role();
+        }
         public int Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
@@ -19,9 +38,5 @@ namespace SmartAgri.DataBase.Models.Models
 
         public Role Role { get; set; }
 
-        public User()
-        {
-            Role = new Role();
-        }
     }
 }

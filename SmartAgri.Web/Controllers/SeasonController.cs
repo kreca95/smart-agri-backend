@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SmartAgri.DataBase.Communication;
 using SmartAgri.DataBase.Models.Models;
@@ -11,6 +12,7 @@ namespace SmartAgri.Web.Controllers
 
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class SeasonController : ControllerBase
     {
         private readonly ISeasonService _DB;

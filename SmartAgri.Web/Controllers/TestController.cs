@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SmartAgri.DataBase.Communication.Interfaces;
+using SmartAgri.Web.Models;
 
 namespace SmartAgri.Web.Controllers
 {
@@ -12,16 +14,19 @@ namespace SmartAgri.Web.Controllers
     [ApiController]
     public class TestController : ControllerBase
     {
-        [HttpGet("anon")]
-        public IActionResult GetActionResultAnonymous()
+        private IUserService _userService;
+
+        public TestController(IUserService userService)
         {
-            return Ok();
+            _userService = userService;
         }
+
         [Authorize]
-        [HttpGet("auth")]
-        public IActionResult GetActionResultAuth()
+        [HttpPost("anon")]
+        public IActionResult GetActionResultAnonymous(UserAuthDTO userAuthDTO)
         {
-            return Ok();
+
+            return Ok(userAuthDTO);
         }
     }
 }
