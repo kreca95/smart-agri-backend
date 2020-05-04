@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using SmartAgri.DataBase.Communication.Interfaces;
 using SmartAgri.DataBase.Models.Models;
+using SmartAgri.Web.Controllers.Helpers;
 using SmartAgri.Web.Models;
 
 namespace SmartAgri.Web.Controllers
@@ -15,7 +16,7 @@ namespace SmartAgri.Web.Controllers
         {
             _fieldService = fieldService;
         }
-
+        #region description
         /// <summary>
         /// Creates a field.
         /// </summary>
@@ -37,11 +38,13 @@ namespace SmartAgri.Web.Controllers
         /// <returns>A newly created field</returns>
         /// <response code="201">Returns the newly created item</response>
         /// <response code="400">If the item is null</response>   
+        /// 
+        #endregion
         [HttpPost]
         public IActionResult UpsertField(UpsertFieldDTO field)
         {
             //Field fieldMapped = _mapper.Map<Field>(field);
-            Field fieldMapped = MappField(field);
+            Field fieldMapped = Mapper.MappField(field);
             //fieldMapped.Geom_ = JsonConvert.DeserializeObject<Geom>(field.Geom);
             if (ModelState.IsValid)
             {
@@ -55,7 +58,7 @@ namespace SmartAgri.Web.Controllers
         }
 
 
-
+        #region description
         /// <summary>
         /// Gets fields by year.
         /// </summary>
@@ -72,6 +75,8 @@ namespace SmartAgri.Web.Controllers
         /// <returns>A newly created field</returns>
         /// <response code="200">Returns fields of a year</response>
         /// <response code="404">If the item is null</response>   
+        /// 
+        #endregion
         [HttpGet]
         [Route("{year}")]
         public IActionResult GetFiledsBySeasonId(int year)
@@ -87,19 +92,7 @@ namespace SmartAgri.Web.Controllers
             return Ok(geom);
         }
 
-        private Field MappField(UpsertFieldDTO field)
-        {
-            Field field1 = new Field();
 
-            field1.FieldId = field.FieldId;
-            field1.Geom_ = field.Geom;
-            field1.Id = field.Id;
-            field1.Name = field.Name;
-            field1.NasIme = field.NasIme;
-            field1.SeasonId = field.SeasonId;
-
-            return field1;
-        }
 
     }
 }

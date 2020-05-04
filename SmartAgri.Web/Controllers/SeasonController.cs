@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SmartAgri.DataBase.Communication;
 using SmartAgri.DataBase.Models.Models;
+using SmartAgri.Web.Controllers.Helpers;
 using SmartAgri.Web.Models;
 
 namespace SmartAgri.Web.Controllers
@@ -39,7 +40,7 @@ namespace SmartAgri.Web.Controllers
             var seasons = _DB.GetSeasons();
 
             //var mapped = _mapper.Map<List<GetSeasonDTO>>(seasons);
-            var mapped = MappGetSeasonDTO(seasons);
+            var mapped = Mapper.MappGetSeasonDTO(seasons);
             if (seasons == null || seasons.Count < 1)
             {
                 return NotFound();
@@ -74,7 +75,7 @@ namespace SmartAgri.Web.Controllers
                 {
                     return NotFound("Season not found.");
                 }
-                GetSeasonDTO mapped = MappGetSeasonDTO(new List<Season> { new Season { Id = a.Id, Name = a.Name, Deleted = a.Deleted } }).FirstOrDefault();
+                GetSeasonDTO mapped = Mapper.MappGetSeasonDTO(new List<Season> { new Season { Id = a.Id, Name = a.Name, Deleted = a.Deleted } }).FirstOrDefault();
 
 
                 return Ok(mapped);
@@ -104,7 +105,7 @@ namespace SmartAgri.Web.Controllers
             {
                 List<Season> seasons = _DB.GetSeasonByYear(year);
                 //var mapped=_mapper.Map<List<GetSeasonDTO>>(seasons);
-                var mapped = MappGetSeasonDTO(seasons);
+                var mapped = Mapper.MappGetSeasonDTO(seasons);
                 if (seasons.Count > 0)
                 {
                     return Ok(mapped);
@@ -141,7 +142,7 @@ namespace SmartAgri.Web.Controllers
             {
                 //var mapped = _mapper.Map<Season>(season);
 
-                Season mapped = MappSeasonFromUpsertSeasonDTO(season);
+                Season mapped = Mapper.MappSeasonFromUpsertSeasonDTO(season);
 
                 bool check = _DB.InsertSeason(mapped);
 
@@ -183,23 +184,6 @@ namespace SmartAgri.Web.Controllers
         }
 
 
-        private List<GetSeasonDTO> MappGetSeasonDTO(List<Season> seasons)
-        {
-            List<GetSeasonDTO> _seasons = new List<GetSeasonDTO>();
-            foreach (var item in seasons)
-            {
-                _seasons.Add(new GetSeasonDTO { Id = item.Id, Name = item.Name });
-            }
-            return _seasons;
-        }
-
-
-        private Season MappSeasonFromUpsertSeasonDTO(UpsertSeasonDTO season)
-        {
-            Season season1 = new Season();
-            season1.Id = season.Id;
-            season1.Name = season.Name;
-            return season1;
-        }
+      
     }
 }

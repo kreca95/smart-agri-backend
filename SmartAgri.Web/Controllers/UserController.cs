@@ -11,6 +11,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using SmartAgri.DataBase.Communication.Interfaces;
 using SmartAgri.DataBase.Models.Models;
+using SmartAgri.Web.Controllers.Helpers;
+using SmartAgri.Web.Helpers;
 using SmartAgri.Web.Models;
 
 namespace SmartAgri.Web.Controllers
@@ -27,7 +29,22 @@ namespace SmartAgri.Web.Controllers
             _config = configuration;
             _userService = userService;
         }
-
+        #region description
+        /// <summary>
+        /// Validates user credentials and generates JWT
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     POST /api/user/login
+        ///
+        /// </remarks>
+        /// <returns>Return JWT if credentials are correct</returns>
+        /// <param name="userAuthDTO"></param>
+        /// <response code="200">Login successful</response>
+        /// <response code="400">If the item exists or input is invalid</response>   
+        /// 
+#endregion
         [AllowAnonymous]
         [HttpPost]
         public IActionResult Login(UserAuthDTO userAuthDTO)
@@ -40,38 +57,49 @@ namespace SmartAgri.Web.Controllers
 
             return Ok(new { token = tokenString });
         }
+        #region description
+        /// <summary>
+        /// Validates user credentials and inserts a user to db
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     POST /api/user/register
+        ///
+        /// </remarks>
+        /// <returns>Return JWT if credentials are correct</returns>
+        /// <param name="userDTO"></param>
+        /// <response code="201">Created user</response>
+        /// <response code="400">If the item exists or input is invalid</response>   
+        /// 
+        #endregion
         [AllowAnonymous]
         [HttpPost("register")]
         public IActionResult Register(RegisterUserDTO userDTO)
         {
+            var errors = Validation.ValidatePassword(userDTO.Password);
+            if (errors.Count > 0)
+            {
+                return BadRequest(errors);
+            }
+            if (!Validation.IsValidEmail(userDTO.Email))
+            {
+                return BadRequest("Email is not valid.");
+            }
             User user = new User();
-            user = MappUserDTOToUser(userDTO);
+            user = Mapper.MappUserDTOToUser(userDTO);
             user.PasswordSalt = Salt.Create();
             user.PasswordHash = Hash.Create(userDTO.Password, user.PasswordSalt);
 
             var check = _userService.Register(user);
-            if (check==false)
+            if (check == false)
             {
                 return BadRequest("User already exists.");
             }
+            // umjesto ok stavit createdAt i ispravit u testovima
             return Ok();
         }
 
-        private User MappUserDTOToUser(RegisterUserDTO userDTO)
-        {
-            User user = new User
-            {
-                Birthday = userDTO.Birthday,
-                Email = userDTO.Email,
-                PasswordSalt = Salt.Create(),
-                FirstName = userDTO.FirstName,
-                LastName = userDTO.LastName,
-                Sex = userDTO.Sex,
-            };
-            user.PasswordHash = Hash.Create(userDTO.Password, user.PasswordSalt);
-
-            return user;
-        }
 
         private string GenerateJSONWebToken()
         {
@@ -86,5 +114,7 @@ namespace SmartAgri.Web.Controllers
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
+
+
     }
 }

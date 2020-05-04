@@ -19,9 +19,5 @@
     <ProjectReference Include="..\SmartAgri.DataBase.Communication\SmartAgri.DataBase.Communication.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Controllers\Helpers\" />
-  </ItemGroup>
-
 
 </Project>
