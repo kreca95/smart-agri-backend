@@ -15,17 +15,24 @@ namespace SmartAgri.DataBase.Communication.ServicesImplementations
             _logger = new NLogDb.NLogDB().GetLogger();
         }
 
-        public bool Authenticate(string email, string password)
+        public User Authenticate(string email, string password)
         {
             try
             {
                 LoginUser loginUser = new LoginUser();
-                User user = new User();
-                user.Email = email;
-                var hashsalt = GetHashAndSalt(email);
-                var hash = hashsalt.Split(' ')[0];
-                var salt = hashsalt.Split(' ')[1];
-                return Hash.Validate(password, salt, hash);
+                User user = new User
+                {
+                    Email = email
+                };
+                var userFromdb = GetHashAndSalt(email);
+                var hash = userFromdb.PasswordHash;
+                var salt = userFromdb.PasswordSalt;
+                var check= Hash.Validate(password, salt, hash);
+                if (check)
+                {
+                    return userFromdb;
+                }
+                return null;
             }
             catch (Exception e)
             {
@@ -38,7 +45,7 @@ namespace SmartAgri.DataBase.Communication.ServicesImplementations
             }
         }
 
-        public string GetHashAndSalt(string email)
+        public User GetHashAndSalt(string email)
         {
             try
             {
@@ -63,7 +70,20 @@ namespace SmartAgri.DataBase.Communication.ServicesImplementations
 
         public List<User> GetUsers()
         {
-            throw new NotImplementedException();
+            try
+            {
+                GetAllUsers getAllUsers = new GetAllUsers();
+                return getAllUsers.Execute();
+            }
+            catch (Exception e)
+            {
+                _logger.Error("Method called: {0}, Error message: {1}", System.Reflection.MethodBase.GetCurrentMethod().Name, e.Message);
+                throw;
+            }
+            finally
+            {
+                _logger.Info("Method called: {0}", System.Reflection.MethodBase.GetCurrentMethod().Name);
+            }
         }
 
         public bool Register(User user)

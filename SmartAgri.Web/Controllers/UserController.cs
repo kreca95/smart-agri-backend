@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using SmartAgri.DataBase.Communication.Helpers;
 using SmartAgri.DataBase.Communication.Interfaces;
 using SmartAgri.DataBase.Models.Models;
 using SmartAgri.Web.Controllers.Helpers;
@@ -23,11 +24,13 @@ namespace SmartAgri.Web.Controllers
     {
         private IConfiguration _config;
         private IUserService _userService;
+        private readonly ITokenService _tokenService;
 
-        public UserController(IConfiguration configuration, IUserService userService)
+        public UserController(IConfiguration configuration, IUserService userService,ITokenService tokenService)
         {
             _config = configuration;
             _userService = userService;
+            _tokenService = tokenService;
         }
         #region description
         /// <summary>
@@ -50,12 +53,11 @@ namespace SmartAgri.Web.Controllers
         public IActionResult Login(UserAuthDTO userAuthDTO)
         {
             var user = _userService.Authenticate(userAuthDTO.Username, userAuthDTO.Password);
-            if (user == false)
+            if (user == null)
                 return BadRequest();
-
-            var tokenString = GenerateJSONWebToken();
-
-            return Ok(new { token = tokenString });
+            var tokenString = _tokenService.GenerateToken(user, _config);
+            var tokenresponse = new TokenResponse { Token = tokenString.Token, RefreshToken = tokenString.RefreshToken };
+            return Ok(tokenresponse);
         }
         #region description
         /// <summary>
@@ -100,21 +102,24 @@ namespace SmartAgri.Web.Controllers
             return Ok();
         }
 
-
-        private string GenerateJSONWebToken()
+        [HttpGet]
+        public IActionResult GetUsers()
         {
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
-            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-
-            var token = new JwtSecurityToken(_config["Jwt:Issuer"],
-              _config["Jwt:Issuer"],
-              null,
-              expires: DateTime.Now.AddMinutes(120),
-              signingCredentials: credentials);
-
-            return new JwtSecurityTokenHandler().WriteToken(token);
+            var users = _userService.GetUsers();
+            if (users.Count>0)
+            {
+                return Ok(users);
+            }
+            return NotFound("No users were found.");
         }
 
+        [HttpPost("refresh-token")]
+        public IActionResult RefreshToken()
+        {
+            var refreshToken = Request.Headers["refresh-token"].ToString();
+            _tokenService.GenerateRefreshToken();
+            return Ok();
+        }
 
     }
 }

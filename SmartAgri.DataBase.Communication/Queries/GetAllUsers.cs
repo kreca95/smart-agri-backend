@@ -8,39 +8,36 @@ using System.Text;
 
 namespace SmartAgri.DataBase.Communication.Queries
 {
-    public class GetHashAndSalt
+    public class GetAllUsers
     {
-        public User Execute(string email)
+        internal List<User> Execute()
         {
-            User user = new User();
+            List<User> users= new List<User>();
             try
             {
-
+                int br = 0;
                 using (NpgsqlConnection conn = new NpgsqlConnection(GetConnectionString.GetConnString()))
                 {
                     NpgsqlCommand cmd = conn.CreateCommand();
 
                     conn.Open();
-                    cmd.Parameters.Add(new NpgsqlParameter("@email", email));
-                    cmd.CommandText = "SELECT * from users WHERE email=@email LIMIT 1";
+
+                    cmd.CommandText = "SELECT * FROM users";
 
                     IDataReader rdr = cmd.ExecuteReader();
-                    user = null;
-
                     while (rdr.Read())
                     {
-                        User _user = new User(rdr);
-                        user = _user;
+                        User user = new User(rdr);
+                        users.Add(user);
                     }
-
                     conn.Close();
 
                 }
-                return user;
+                return users;
             }
             catch (Exception e)
             {
-
+                
                 throw e;
             }
         }

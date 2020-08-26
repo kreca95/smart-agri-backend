@@ -35,6 +35,7 @@ namespace SmartAgri.Web
             services.AddScoped<ISeasonService, SeasonService>();
             services.AddScoped<IFieldService, FieldService>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<ITokenService, TokenService>();
             services.AddSwaggerDocumentation();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
