@@ -32,10 +32,15 @@ namespace SmartAgri.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers().AddNewtonsoftJson();
+
+
             services.AddScoped<ISeasonService, SeasonService>();
             services.AddScoped<IFieldService, FieldService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ITokenService, TokenService>();
+            services.AddScoped<IAgriCropSpecsService, AgriCropSpecService>();
+
+
             services.AddSwaggerDocumentation();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>

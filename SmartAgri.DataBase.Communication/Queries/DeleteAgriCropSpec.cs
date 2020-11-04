@@ -8,32 +8,29 @@ using System.Text;
 
 namespace SmartAgri.DataBase.Communication.Queries
 {
-    class GetSeasons
+    public class DeleteAgriCropSpec
     {
-        public List<Season> Execute( )
+        internal bool Execute(int id)
         {
-            List<Season> seasons = new List<Season>();
+            List<User> users = new List<User>();
             try
             {
-
+                int br = 0;
                 using (NpgsqlConnection conn = new NpgsqlConnection(GetConnectionString.GetConnString()))
                 {
                     NpgsqlCommand cmd = conn.CreateCommand();
 
                     conn.Open();
-                    cmd.CommandText = "SELECT * from t_agri_season as s  where s.deleted is not true";
+                    cmd.Parameters.Add(new NpgsqlParameter("@id", id));
+                    cmd.CommandText = "DELETE FROM t_agri_crop_specs WHERE id=@id";
 
-                    IDataReader rdr = cmd.ExecuteReader();
-                    while (rdr.Read())
-                    {
-                        Season _season = new Season(rdr);
-                        seasons.Add(_season);
-                    }
+                    br = cmd.ExecuteNonQuery();
+
 
                     conn.Close();
 
                 }
-                return seasons;
+                return br > 0;
             }
             catch (Exception e)
             {

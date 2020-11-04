@@ -52,12 +52,20 @@ namespace SmartAgri.Web.Controllers
         [HttpPost]
         public IActionResult Login(UserAuthDTO userAuthDTO)
         {
-            var user = _userService.Authenticate(userAuthDTO.Username, userAuthDTO.Password);
-            if (user == null)
+            try
+            {
+                var user = _userService.Authenticate(userAuthDTO.Username, userAuthDTO.Password);
+                if (user == null)
+                    return BadRequest();
+                var tokenString = _tokenService.GenerateToken(user, _config);
+                var tokenresponse = new TokenResponse { Token = tokenString.Token, RefreshToken = tokenString.RefreshToken };
+                return Ok(tokenresponse);
+            }
+            catch (Exception)
+            {
                 return BadRequest();
-            var tokenString = _tokenService.GenerateToken(user, _config);
-            var tokenresponse = new TokenResponse { Token = tokenString.Token, RefreshToken = tokenString.RefreshToken };
-            return Ok(tokenresponse);
+                throw;
+            }
         }
         #region description
         /// <summary>
@@ -79,38 +87,54 @@ namespace SmartAgri.Web.Controllers
         [HttpPost("register")]
         public IActionResult Register(RegisterUserDTO userDTO)
         {
-            var errors = Validation.ValidatePassword(userDTO.Password);
-            if (errors.Count > 0)
+            try
             {
-                return BadRequest(errors);
-            }
-            if (!Validation.IsValidEmail(userDTO.Email))
-            {
-                return BadRequest("Email is not valid.");
-            }
-            User user = new User();
-            user = Mapper.MappUserDTOToUser(userDTO);
-            user.PasswordSalt = Salt.Create();
-            user.PasswordHash = Hash.Create(userDTO.Password, user.PasswordSalt);
+                var errors = Validation.ValidatePassword(userDTO.Password);
+                if (errors.Count > 0)
+                {
+                    return BadRequest(errors);
+                }
+                if (!Validation.IsValidEmail(userDTO.Email))
+                {
+                    return BadRequest("Email is not valid.");
+                }
+                User user = new User();
+                user = Mapper.MappUserDTOToUser(userDTO);
+                user.PasswordSalt = Salt.Create();
+                user.PasswordHash = Hash.Create(userDTO.Password, user.PasswordSalt);
 
-            var check = _userService.Register(user);
-            if (check == false)
-            {
-                return BadRequest("User already exists.");
+                var check = _userService.Register(user);
+                if (check == false)
+                {
+                    return BadRequest("User already exists.");
+                }
+                // umjesto ok stavit createdAt i ispravit u testovima
+                return Ok();
             }
-            // umjesto ok stavit createdAt i ispravit u testovima
-            return Ok();
+            catch (Exception e)
+            {
+                return BadRequest();
+                throw;
+            }
         }
 
         [HttpGet]
         public IActionResult GetUsers()
         {
-            var users = _userService.GetUsers();
-            if (users.Count>0)
+            try
             {
-                return Ok(users);
+                var users = _userService.GetUsers();
+                if (users.Count > 0)
+                {
+                    return Ok(users);
+                }
+                return NotFound("No users were found.");
             }
-            return NotFound("No users were found.");
+            catch (Exception)
+            {
+                return BadRequest();
+                throw;
+            }
         }
 
         [HttpPost("refresh-token")]

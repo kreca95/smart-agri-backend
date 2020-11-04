@@ -22,7 +22,7 @@ namespace SmartAgri.DataBase.Communication.Queries
 
                     conn.Open();
                     cmd.Parameters.Add(new NpgsqlParameter("@email", email));
-                    cmd.CommandText = "SELECT * from users WHERE email=@email LIMIT 1";
+                    cmd.CommandText = "SELECT * from t_user WHERE email=@email LIMIT 1";
 
                     IDataReader rdr = cmd.ExecuteReader();
                     user = null;

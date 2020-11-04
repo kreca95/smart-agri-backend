@@ -38,15 +38,15 @@ namespace SmartAgri.DataBase.Communication.Queries
                                     'geometry',   ST_AsGeoJSON(geom)::json,
                                     'properties', json_build_object(
                                         -- list of fields
-                                        'name', name,
-                                        'nas_ime', nas_ime,
+                                        'name', field_name,
+                                        'nas_ime', settlement_name,
 	                            'season_id', season_id,
 	                            'field_id', field_id
                                     )
                                 )
                             )
                         )
-                        FROM fields
+                        FROM t_agri_field
                         WHERE fields.season_id = @year;
                         ";
 

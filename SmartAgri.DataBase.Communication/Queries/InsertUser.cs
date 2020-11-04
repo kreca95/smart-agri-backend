@@ -30,7 +30,7 @@ namespace SmartAgri.DataBase.Communication.Queries
                         cmd.Parameters.Add(new NpgsqlParameter("@passwordhash", user.PasswordHash));
                         cmd.Parameters.Add(new NpgsqlParameter("@passwordsalt", user.PasswordSalt));
 
-                        cmd.CommandText = @"INSERT INTO users (first_name,last_name,role,sex,birthday,email,passwordhash,passwordsalt) 
+                        cmd.CommandText = @"INSERT INTO t_user (first_name,last_name,role_id,sex,birthday,email,password_hash,password_salt) 
                                             VALUES (@firstname,@lastname,@role,@sex,@birthday,@email,@passwordhash,@passwordsalt)
                                             ON CONFLICT(email) DO NOTHING
                                             ";                                            

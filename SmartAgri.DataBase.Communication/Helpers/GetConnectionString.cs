@@ -7,7 +7,7 @@ namespace SmartAgri.DataBase.Communication.Helpers
 {
     public static class GetConnectionString
     {
-        private static readonly string _connString = "Server='database-1.cjsu9j876srn.eu-west-1.rds.amazonaws.com'; Port=5432; Database=SmartAgri;User Id=postgres;Password=734afuz6;";
+        private static readonly string _connString = "Server='smart-agri1.cefouru8azlr.eu-central-1.rds.amazonaws.com'; Port=5432; Database=postgres;User Id=postgres;Password=nWMGnHR6m5kWuWDcYSKw;";
 
 
         public static string GetConnString()

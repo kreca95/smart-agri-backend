@@ -23,7 +23,7 @@ namespace SmartAgri.DataBase.Communication.Queries
                     cmd.Parameters.Add(new NpgsqlParameter("@id", season.Id));
                     cmd.Parameters.Add(new NpgsqlParameter("@name", season.Name));
 
-                    cmd.CommandText = "SELECT * FROM season as s WHERE s.id=@id and s.name=@name and s.delted is not true";
+                    cmd.CommandText = "SELECT * FROM t_agri_season as s WHERE s.id=@id and s.name=@name and s.delted is not true";
 
                     IDataReader rdr = cmd.ExecuteReader();
                     while (rdr.Read())

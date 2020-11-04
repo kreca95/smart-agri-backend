@@ -21,12 +21,18 @@ namespace SmartAgri.Web.Controllers
             _userService = userService;
         }
 
-        [Authorize]
-        [HttpPost("anon")]
-        public IActionResult GetActionResultAnonymous(UserAuthDTO userAuthDTO)
+        [HttpPost()]
+        public IActionResult GetActionResultAnonymous()
         {
-
-            return Ok(userAuthDTO);
+            var a = Request;
+            return Ok();
+        }
+        [Authorize]
+        [HttpGet]
+        public IActionResult GetAction()
+        {
+            var a=Request;
+            return Ok();
         }
     }
 }

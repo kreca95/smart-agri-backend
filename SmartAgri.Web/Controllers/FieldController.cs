@@ -4,6 +4,7 @@ using SmartAgri.DataBase.Communication.Interfaces;
 using SmartAgri.DataBase.Models.Models;
 using SmartAgri.Web.Controllers.Helpers;
 using SmartAgri.Web.Models;
+using System;
 
 namespace SmartAgri.Web.Controllers
 {
@@ -43,18 +44,26 @@ namespace SmartAgri.Web.Controllers
         [HttpPost]
         public IActionResult UpsertField(UpsertFieldDTO field)
         {
-            //Field fieldMapped = _mapper.Map<Field>(field);
-            Field fieldMapped = Mapper.MappField(field);
-            //fieldMapped.Geom_ = JsonConvert.DeserializeObject<Geom>(field.Geom);
-            if (ModelState.IsValid)
+            try
             {
-                var check = _fieldService.UpsertField(fieldMapped);
-                if (check)
+                //Field fieldMapped = _mapper.Map<Field>(field);
+                Field fieldMapped = Mapper.MappField(field);
+                //fieldMapped.Geom_ = JsonConvert.DeserializeObject<Geom>(field.Geom);
+                if (ModelState.IsValid)
                 {
-                    Ok(field);
+                    var check = _fieldService.UpsertField(fieldMapped);
+                    if (check)
+                    {
+                        Ok(field);
+                    }
                 }
+                return BadRequest();
             }
-            return BadRequest();
+            catch (Exception e)
+            {
+                return BadRequest();
+                throw;
+            }
         }
 
 
@@ -81,15 +90,23 @@ namespace SmartAgri.Web.Controllers
         [Route("{year}")]
         public IActionResult GetFiledsBySeasonId(int year)
         {
-            string fields = _fieldService.GetFieldsBySeasonYear(year);
-
-            GetFiledsBySeasonId geom = JsonConvert.DeserializeObject<GetFiledsBySeasonId>(fields);
-
-            if (geom.type.Equals(null))
+            try
             {
-                return NotFound();
+                string fields = _fieldService.GetFieldsBySeasonYear(year);
+
+                GetFiledsBySeasonId geom = JsonConvert.DeserializeObject<GetFiledsBySeasonId>(fields);
+
+                if (geom.type.Equals(null))
+                {
+                    return NotFound();
+                }
+                return Ok(geom);
             }
-            return Ok(geom);
+            catch (Exception e)
+            {
+                return BadRequest();
+                throw;
+            }
         }
 
 

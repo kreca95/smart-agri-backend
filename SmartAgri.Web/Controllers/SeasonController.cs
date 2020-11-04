@@ -37,16 +37,24 @@ namespace SmartAgri.Web.Controllers
         [HttpGet]
         public IActionResult GetSeasons()
         {
-            var seasons = _DB.GetSeasons();
-
-            //var mapped = _mapper.Map<List<GetSeasonDTO>>(seasons);
-            var mapped = Mapper.MappGetSeasonDTO(seasons);
-            if (seasons == null || seasons.Count < 1)
+            try
             {
-                return NotFound();
-            }
+                var seasons = _DB.GetSeasons();
 
-            return Ok(mapped);
+                //var mapped = _mapper.Map<List<GetSeasonDTO>>(seasons);
+                var mapped = Mapper.MappGetSeasonDTO(seasons);
+                if (seasons == null || seasons.Count < 1)
+                {
+                    return NotFound();
+                }
+
+                return Ok(mapped);
+            }
+            catch (System.Exception)
+            {
+                return BadRequest();
+                throw;
+            }
         }
 
 
@@ -67,22 +75,30 @@ namespace SmartAgri.Web.Controllers
         [HttpGet("{id}", Name = "GetSeason")]
         public IActionResult Get(int id)
         {
-            if (id != 0)
+            try
             {
-                var a = _DB.GetSeasonById(id);
-                //var mapped = _mapper.Map<GetSeasonDTO>(a);
-                if (a == null)
+                if (id != 0)
                 {
-                    return NotFound("Season not found.");
+                    var a = _DB.GetSeasonById(id);
+                    //var mapped = _mapper.Map<GetSeasonDTO>(a);
+                    if (a == null)
+                    {
+                        return NotFound("Season not found.");
+                    }
+                    GetSeasonDTO mapped = Mapper.MappGetSeasonDTO(new List<Season> { new Season { Id = a.Id, Name = a.Name, Deleted = a.Deleted } }).FirstOrDefault();
+
+
+                    return Ok(mapped);
                 }
-                GetSeasonDTO mapped = Mapper.MappGetSeasonDTO(new List<Season> { new Season { Id = a.Id, Name = a.Name, Deleted = a.Deleted } }).FirstOrDefault();
-
-
-                return Ok(mapped);
+                else
+                {
+                    return BadRequest("Invalid id.");
+                }
             }
-            else
+            catch (System.Exception)
             {
-                return BadRequest("Invalid id.");
+                return BadRequest();
+                throw;
             }
         }
         /// <summary>
@@ -101,23 +117,31 @@ namespace SmartAgri.Web.Controllers
         [HttpGet("year/{year}")]
         public IActionResult GetSeasonByYear(int year)
         {
-            if (year != 0)
+            try
             {
-                List<Season> seasons = _DB.GetSeasonByYear(year);
-                //var mapped=_mapper.Map<List<GetSeasonDTO>>(seasons);
-                var mapped = Mapper.MappGetSeasonDTO(seasons);
-                if (seasons.Count > 0)
+                if (year != 0)
                 {
-                    return Ok(mapped);
+                    List<Season> seasons = _DB.GetSeasonByYear(year);
+                    //var mapped=_mapper.Map<List<GetSeasonDTO>>(seasons);
+                    var mapped = Mapper.MappGetSeasonDTO(seasons);
+                    if (seasons.Count > 0)
+                    {
+                        return Ok(mapped);
+                    }
+                    else
+                    {
+                        return NotFound();
+                    }
                 }
                 else
                 {
-                    return NotFound();
+                    return BadRequest("Invalid year.");
                 }
             }
-            else
+            catch (System.Exception)
             {
-                return BadRequest("Invalid year.");
+                return BadRequest();
+                throw;
             }
         }
 
@@ -138,20 +162,28 @@ namespace SmartAgri.Web.Controllers
         //provjerit name i id postoje li vec
         public IActionResult UpsertSeason([FromBody] UpsertSeasonDTO season)
         {
-            if (ModelState.IsValid && season!=null)
+            try
             {
-                //var mapped = _mapper.Map<Season>(season);
-
-                Season mapped = Mapper.MappSeasonFromUpsertSeasonDTO(season);
-
-                bool check = _DB.InsertSeason(mapped);
-
-                if (check)
+                if (ModelState.IsValid && season != null)
                 {
-                    return CreatedAtRoute("GetSeason", new { id = season.Id }, season);
+                    //var mapped = _mapper.Map<Season>(season);
+
+                    Season mapped = Mapper.MappSeasonFromUpsertSeasonDTO(season);
+
+                    bool check = _DB.InsertSeason(mapped);
+
+                    if (check)
+                    {
+                        return CreatedAtRoute("GetSeason", new { id = season.Id }, season);
+                    }
                 }
+                return BadRequest();
             }
-            return BadRequest();
+            catch (System.Exception)
+            {
+                return BadRequest();
+                throw;
+            }
         }
 
 
@@ -172,15 +204,23 @@ namespace SmartAgri.Web.Controllers
         [HttpDelete("{id}")]
         public IActionResult DeleteSeason(int id)
         {
-            if (id != 0)
+            try
             {
-                bool check = _DB.DeleteSeason(id);
-                if (check)
+                if (id != 0)
                 {
-                    return Ok();
+                    bool check = _DB.DeleteSeason(id);
+                    if (check)
+                    {
+                        return Ok();
+                    }
                 }
+                return NotFound();
             }
-            return NotFound();
+            catch (System.Exception)
+            {
+                return BadRequest();
+                throw;
+            }
         }
 
 

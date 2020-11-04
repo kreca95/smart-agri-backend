@@ -22,7 +22,7 @@ namespace SmartAgri.DataBase.Communication.Queries
 
                     conn.Open();
                     cmd.Parameters.Add(new NpgsqlParameter("@year", id));
-                    cmd.CommandText = "SELECT * from season WHERE id=@year and deleted is not true";
+                    cmd.CommandText = "SELECT * from t_agri_season WHERE id=@year and deleted is not true";
 
                     IDataReader rdr = cmd.ExecuteReader();
                     season = null;

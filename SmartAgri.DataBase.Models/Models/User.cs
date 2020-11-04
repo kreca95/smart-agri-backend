@@ -13,15 +13,15 @@ namespace SmartAgri.DataBase.Models.Models
         }
         public User(System.Data.IDataReader rdr)
         {
-            PasswordHash = rdr.GetRecord<string>("passwordhash");
-            PasswordSalt = rdr.GetRecord<string>("passwordsalt");
+            PasswordHash = rdr.GetRecord<string>("password_hash");
+            PasswordSalt = rdr.GetRecord<string>("password_salt");
             Id = rdr.GetRecord<int>("id");
             FirstName = rdr.GetRecord<string>("first_name");
             LastName = rdr.GetRecord<string>("last_name");
             Sex = rdr.GetRecord<string>("sex");
             Birthday = rdr.GetRecord<DateTime>("birthday");
             Email = rdr.GetRecord<string>("email");
-            RoleId = rdr.GetRecord<int>("role");
+            RoleId = rdr.GetRecord<int>("role_id");
 
             Role = new Role();
         }

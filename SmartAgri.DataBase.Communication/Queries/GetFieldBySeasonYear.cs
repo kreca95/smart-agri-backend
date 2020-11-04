@@ -22,7 +22,7 @@ namespace SmartAgri.DataBase.Communication.Queries
 
                     conn.Open();
                     cmd.Parameters.Add(new NpgsqlParameter("@year", year));
-                    cmd.CommandText = "SELECT * from fields WHERE season_id=@year";
+                    cmd.CommandText = "SELECT * from t_agri_season WHERE season_id=@year";
 
                     IDataReader rdr = cmd.ExecuteReader();
                     while (rdr.Read())
